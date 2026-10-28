@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Frame — Advanced Image Splitter for Instagram Carousels</title>
+  <meta name="description" content="Cut one photo into seamless carousel panels for Instagram. Choose 2–6 panels, square or portrait crops, and download print-ready slices — free, private, right in your browser.">
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🖼️</text></svg>">
+</head>
+<body>
+  <div class="bg-glow" aria-hidden="true"></div>
+
+  <header class="topbar">
+    <a class="brand" href="./">
+      <span class="brand-mark">▦</span>
+      <span>Frame<em>·2cut</em></span>
+    </a>
+    <nav>
+      <a href="#tool">Tool</a>
+      <a href="#how">How it works</a>
+      <button id="themeToggle" class="ghost-btn" type="button" title="Toggle light / dark">🌙</button>
+      <a class="github-link" href="https://github.com/dray-me/2cut.github.io" target="_blank" rel="noopener">GitHub ↗</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <h1>One photo. <span class="grad">Perfect carousel.</span></h1>
+      <p>Split a single image into seamless panels for Instagram carousels &amp; reposts.
+         Everything runs in your browser — your photo never leaves your device.</p>
+    </section>
+
+    <section id="tool" class="panel">
+      <!-- Upload -->
+      <div id="dropzone" class="dropzone" tabindex="0" role="button" aria-label="Upload an image">
+        <div class="dz-icon">🖼️</div>
+        <p class="dz-title">Drag &amp; drop your image here</p>
+        <p class="dz-sub">or <span class="linklike">click to browse</span> · or paste with <kbd>Ctrl</kbd>+<kbd>V</kbd></p>
+        <p class="dz-formats">JPG · PNG · WebP — high resolution works best</p>
+        <input type="file" id="fileInput" accept="image/*" hidden>
+      </div>
+
+      <div id="workspace" hidden>
+        <!-- Controls -->
+        <div class="controls">
+          <div class="control">
+            <label>Panels <span id="panelsValue" class="value">2</span></label>
+            <input type="range" id="panelsRange" min="2" max="6" step="1" value="2">
+            <div class="quick-row" id="panelsQuick">
+              <button type="button" data-panels="2" class="chip active">2</button>
+              <button type="button" data-panels="3" class="chip">3</button>
+              <button type="button" data-panels="4" class="chip">4</button>
+              <button type="button" data-panels="5" class="chip">5</button>
+              <button type="button" data-panels="6" class="chip">6</button>
+            </div>
+          </div>
+
+          <div class="control">
+            <label>Direction</label>
+            <div class="segmented" id="directionSeg">
+              <button type="button" data-dir="vertical" class="active">⇥ Vertical slices</button>
+              <button type="button" data-dir="horizontal">⇩ Horizontal slices</button>
+            </div>
+          </div>
+
+          <div class="control">
+            <label>Panel shape (Instagram)</label>
+            <div class="segmented wrap" id="aspectSeg">
+              <button type="button" data-aspect="original" class="active">Original — seamless</button>
+              <button type="button" data-aspect="1">1 : 1 Square</button>
+              <button type="button" data-aspect="0.8">4 : 5 Portrait</button>
+              <button type="button" data-aspect="0.75">3 : 4 Portrait</button>
+            </div>
+            <p class="hint">Shaped modes centre-crop your photo so every panel is exactly Instagram-ready.</p>
+          </div>
+
+          <div class="control two-col">
+            <div>
+              <label for="formatSelect">Format</label>
+              <select id="formatSelect">
+                <option value="image/png">PNG — lossless</option>
+                <option value="image/jpeg">JPG — smaller file</option>
+                <option value="image/webp">WebP — smallest</option>
+              </select>
+            </div>
+            <div id="qualityWrap" hidden>
+              <label>Quality <span id="qualityValue" class="value">92%</span></label>
+              <input type="range" id="qualityRange" min="60" max="100" step="1" value="92">
+            </div>
+          </div>
+
+          <div class="control actions-row">
+            <button id="changeBtn" class="ghost-btn big" type="button">↺ Change image</button>
+            <button id="downloadAllBtn" class="primary-btn big" type="button">⬇ Download all panels</button>
+          </div>
+        </div>
+
+        <!-- Original preview with slice guides -->
+        <div class="preview-block">
+          <div class="block-head">
+            <h2>Preview</h2>
+            <span id="imageMeta" class="meta"></span>
+          </div>
+          <div id="previewWrap" class="preview-wrap">
+            <img id="previewImg" alt="Your uploaded image with slice guides">
+            <div id="guides" class="guides"></div>
+          </div>
+          <p class="hint">The glowing lines are exactly where Frame will cut. Post the panels in order 1 → <span id="orderEnd">2</span> for a seamless swipe.</p>
+        </div>
+
+        <!-- Results -->
+        <div class="preview-block">
+          <div class="block-head">
+            <h2>Your panels</h2>
+            <span id="panelMeta" class="meta"></span>
+          </div>
+          <div id="results" class="results"></div>
+        </div>
+      </div>
+
+      <p id="toast" class="toast" hidden></p>
+    </section>
+
+    <section id="how" class="how">
+      <h2>How it works</h2>
+      <div class="steps">
+        <div class="step"><span>1</span><h3>Upload</h3><p>Drop in any photo. It is processed locally on your device — never uploaded to a server.</p></div>
+        <div class="step"><span>2</span><h3>Slice</h3><p>Pick 2–6 panels, a direction, and a shape. Square (1:1) and portrait (4:5 / 3:4) are centre-cropped automatically.</p></div>
+        <div class="step"><span>3</span><h3>Post</h3><p>Download the panels and add them to Instagram in order. Swiping reveals one continuous image.</p></div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>Frame · 2cut — made by <a href="https://github.com/dray-me" target="_blank" rel="noopener">Dray</a> · Free &amp; private, runs 100% in your browser</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
